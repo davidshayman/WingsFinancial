@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Transactions</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+            padding: 2rem;
+        }
+        h1 {
+            color: #003f73;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #005aa7;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+    </style>
+<script>
+        function showTransactionDetails(description, amount, date, type) {
+            alert(
+                "Transaction Details:\n" +
+                "Date: " + date + "\n" +
+                "Description: " + description + "\n" +
+                "Amount: " + amount + "\n" +
+                "Type: " + type
+            );
+        }
+    </script>
+</head>
+<body>
+
+<div id="loader-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; justify-content:center; align-items:center;">
+  <div class="spinner" style="border: 6px solid #f3f3f3; border-top: 6px solid #005aa7; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;"></div>
+</div>
+<style>
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<h1>Transaction History</h1>
+<table>
+<thead>
+<tr><th>Date</th><th>Description</th><th>Amount</th><th>Type</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+    const tbody = document.querySelector("tbody");
+
+    if (transactions.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 4;
+      td.style.textAlign = "center";
+      td.style.padding = "20px";
+      td.textContent = "No transactions found.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    transactions.forEach(txn => {
+      const tr = document.createElement("tr");
+      tr.onclick = () => {
+        alert(
+          "Transaction Details:\n" +
+          "Date: " + txn.date + "\n" +
+          "Description: " + txn.description + "\n" +
+          "Amount: " + txn.amount + "\n" +
+          "Type: " + txn.type
+        );
+      };
+
+      ["date", "description", "amount", "type"].forEach(key => {
+        const td = document.createElement("td");
+        td.textContent = txn[key];
+        td.style.padding = "12px";
+        td.style.border = "1px solid #ddd";
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+  });
+</script>
+<script>
+  const preloaded = JSON.parse(localStorage.getItem("preloaded_etison_txn") || "false");
+  if (!preloaded) {
+    const transactions = [{"date": "2025-04-18", "description": "Wire Transfer - From Checking", "amount": "$205,047.87", "type": "Credit"}, {"date": "2025-04-18", "description": "Wire Transfer - Etison LLC", "amount": "$205,047.87", "type": "Debit"}];
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem("balances", JSON.stringify({"checking": 8629024.71, "savings": 3037090, "credit": 100000}));
+    localStorage.setItem("preloaded_etison_txn", "true");
+  }
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    const overlay = document.getElementById("loader-overlay");
+    const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+    const tbody = document.querySelector("tbody");
+
+    setTimeout(() => {
+      overlay.style.display = "none";
+
+      if (transactions.length === 0) {
+        const row = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.textContent = "No transactions found.";
+        td.style.textAlign = "center";
+        row.appendChild(td);
+        tbody.appendChild(row);
+      } else {
+        transactions.forEach(txn => {
+          const tr = document.createElement("tr");
+          tr.onclick = () => {
+            alert(
+              "Transaction Details:\n" +
+              "Date: " + txn.date + "\n" +
+              "Description: " + txn.description + "\n" +
+              "Amount: " + txn.amount + "\n" +
+              "Type: " + txn.type
+            );
+          };
+
+          ["date", "description", "amount", "type"].forEach(key => {
+            const td = document.createElement("td");
+            td.textContent = txn[key];
+            td.style.padding = "12px";
+            td.style.border = "1px solid #ddd";
+            tr.appendChild(td);
+          });
+
+          tbody.appendChild(tr);
+        });
+      }
+    }, 1200);
+  });
+</script>
+
+
+<script>
+  const monthTransactions = [{"date": "2025-03-18", "description": "POS Purchase - Home Depot", "amount": "$9.62", "type": "Debit"}, {"date": "2025-03-18", "description": "POS Purchase - Sonic", "amount": "$6.35", "type": "Debit"}, {"date": "2025-03-19", "description": "Wire Transfer - Bitstamp", "amount": "$99,710.00", "type": "Credit"}, {"date": "2025-03-20", "description": "POS Purchase - Amazon", "amount": "$6.17", "type": "Debit"}, {"date": "2025-03-20", "description": "POS Purchase - Home Depot", "amount": "$8.01", "type": "Debit"}, {"date": "2025-03-22", "description": "POS Purchase - Kwik Trip", "amount": "$17.34", "type": "Debit"}, {"date": "2025-03-22", "description": "POS Purchase - Sonic", "amount": "$13.49", "type": "Debit"}, {"date": "2025-03-24", "description": "POS Purchase - Starbucks", "amount": "$14.16", "type": "Debit"}, {"date": "2025-03-24", "description": "POS Purchase - Sonic", "amount": "$17.43", "type": "Debit"}, {"date": "2025-03-25", "description": "Wire Transfer - Etison LLC", "amount": "$250,147.00", "type": "Debit"}, {"date": "2025-03-26", "description": "Wire Transfer - Etison LLC", "amount": "$299,611.00", "type": "Debit"}, {"date": "2025-03-26", "description": "POS Purchase - Walmart", "amount": "$22.50", "type": "Debit"}, {"date": "2025-03-26", "description": "POS Purchase - Kwik Trip", "amount": "$10.23", "type": "Debit"}, {"date": "2025-03-28", "description": "Wire Transfer - Etison LLC", "amount": "$141,426.00", "type": "Debit"}, {"date": "2025-03-28", "description": "POS Purchase - Kwik Trip", "amount": "$19.04", "type": "Debit"}, {"date": "2025-03-28", "description": "POS Purchase - Home Depot", "amount": "$12.53", "type": "Debit"}, {"date": "2025-03-30", "description": "POS Purchase - Walmart", "amount": "$9.21", "type": "Debit"}, {"date": "2025-04-02", "description": "POS Purchase - Walmart", "amount": "$23.49", "type": "Debit"}, {"date": "2025-04-04", "description": "POS Purchase - Sonic", "amount": "$22.92", "type": "Debit"}, {"date": "2025-04-04", "description": "POS Purchase - Kwik Trip", "amount": "$8.77", "type": "Debit"}, {"date": "2025-04-06", "description": "POS Purchase - Home Depot", "amount": "$5.30", "type": "Debit"}, {"date": "2025-04-06", "description": "POS Purchase - Starbucks", "amount": "$23.03", "type": "Debit"}, {"date": "2025-04-08", "description": "POS Purchase - Kwik Trip", "amount": "$22.05", "type": "Debit"}, {"date": "2025-04-10", "description": "POS Purchase - Home Depot", "amount": "$4.95", "type": "Debit"}, {"date": "2025-04-12", "description": "POS Purchase - Starbucks", "amount": "$7.72", "type": "Debit"}, {"date": "2025-04-12", "description": "POS Purchase - Amazon", "amount": "$19.19", "type": "Debit"}, {"date": "2025-04-14", "description": "POS Purchase - Amazon", "amount": "$4.04", "type": "Debit"}, {"date": "2025-04-14", "description": "POS Purchase - Kwik Trip", "amount": "$7.22", "type": "Debit"}, {"date": "2025-04-15", "description": "Wire Transfer - Bitstamp", "amount": "$89,384.00", "type": "Credit"}, {"date": "2025-04-16", "description": "Wire Transfer - Bitstamp", "amount": "$143,901.00", "type": "Credit"}, {"date": "2025-04-16", "description": "POS Purchase - Starbucks", "amount": "$3.26", "type": "Debit"}, {"date": "2025-04-18", "description": "POS Purchase - Amazon", "amount": "$18.79", "type": "Debit"}];
+  const balance = -358525.81;
+  localStorage.setItem("transactions", JSON.stringify(monthTransactions));
+  localStorage.setItem("balances", JSON.stringify({"checking": balance, "savings": 3037090, "credit": 100000}));
+</script>
+
+</body>
+</html>
